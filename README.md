@@ -7,6 +7,10 @@ You will need to upload the contents of the folder *skillset* to your skydio ski
 This package contains a slightly modified version of the skydio UDP link code with support for the
 voxel map and other channels.
 
+The package contains a simple "industrial inspection" skill that flies to predefined camera poses
+defined by waypoints and gimbal angles, and lands at the end. It streams the vehicle voxel map,
+pose, gimbal pose, and the downsampled 15Hz user camera stream.
+
 ## ROS Proxy
 To start the proxy, call
 
