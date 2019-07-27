@@ -1,0 +1,51 @@
+<launch>
+  <arg name="USER_CAMERA_PORT" default="55004"/>
+  <arg name="UDP_PORT" default="50112"/>
+
+  <node name="voxel_republisher" pkg="skydio_proxy" type="voxel_republisher_node" output="screen">
+    <param name="voxel_rle_topic" value="/skydio/voxel_rle"/>
+
+    <!-- TODO: add params to node -->
+    <param name="vehicle_frame" value="skydio"/>
+    <param name="voxel_frame" value="skydio_voxels"/>
+    <param name="world_frame" value="world"/>
+    <param name="nav_frame" value="nav"/>
+  </node>
+
+  <node name="skydio" pkg="skydio_proxy" type="udp_proxy.py" output="screen">
+    <!-- Skills -->
+    <!-- Set this parameter to your skydio SDK login -->
+    <!-- param name="user_email" value="name@example.com"/ -->
+
+    <!-- Ports -->
+    <param name="h264_stream_port" value="$(arg USER_CAMERA_PORT)"/>
+    <param name="udp_port" value="$(arg UDP_PORT)"/>
+
+    <!-- TF configuration -->
+    <param name="vehicle_frame" value="skydio"/>
+    <param name="voxel_frame" value="skydio_voxels"/>
+    <param name="nav_frame" value="nav"/>
+    <param name="world_frame" value="world"/>
+    <param name="gimbal_frame" value="gimbal"/>
+
+    <!-- Inspection skill configuration -->
+    <param name="land_on_skill_finished" value="True"/>
+    <param name="skill_poll_period" value="1.0"/>
+    <param name="inspection_skill" value="msrm.inspection.IndustrialInspection"/>
+  </node>
+
+  <node name="service_gui" pkg="skydio_proxy" type="service_gui.py" output="screen">
+    <param name="service_path" value="skydio/command"/>
+  </node>
+
+  <node ns="skydio_camera" name="user_camera" pkg="gscam" type="gscam" output="screen">
+    <param name="camera_name" value="user_camera"/>
+    <param name="camera_info_url" value="package://skydio_proxy/calibration/user_camera.ini"/>
+    <param name="gscam_config" value="udpsrc port=$(arg USER_CAMERA_PORT) ! application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96 ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert"/>
+    <param name="frame_id" value="gimbal"/>
+    <param name="sync_sink" value="true"/>
+  </node>
+
+  <node ns="skydio_camera/camera" name="image_rectification" pkg="image_proc" type="image_proc" output="screen" />
+
+</launch>

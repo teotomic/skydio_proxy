@@ -1,0 +1,8 @@
+{
+  "inspection.IndustrialInspection": {
+    "display_name": "Industrial inspection",
+    "explanation": "Fly a predefined path in the the VIO frame",
+    "hint": "Industrial inspection",
+    "short_name": "IndustrialInspection"
+  }
+}

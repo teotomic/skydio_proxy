@@ -1,0 +1,9 @@
+<launch>
+  <node ns="skydio" name="user_camera" pkg="gscam" type="gscam" output="screen">
+    <param name="camera_name" value="user_camera"/>
+    <param name="camera_info_url" value="package://skydio_proxy/calibration/user_camera.ini"/>
+    <param name="gscam_config" value="udpsrc port=55004 ! application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96 ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert"/>
+    <param name="frame_id" value="/skydio/user_camera"/>
+    <param name="sync_sink" value="true"/>
+  </node>
+</launch>

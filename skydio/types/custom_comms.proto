@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package skills;
+option java_package = "com.skydio.pbtypes.skills";
+option java_outer_classname = "CustomCommsProto";
+
+// An RPC request message containing a skill destination and binary user data
+message CustomRpcRequest {
+  // utime of the message
+  int64 utime = 1;
+  // version of the message
+  int32 version = 2;
+
+  // A unique id for the request.  This will be copied into the response.
+  int64 request_id = 3;
+
+  // If false, the vehicle won't send a response.
+  bool ack = 4;
+
+  // The key of the skill which will receive this request.
+  // If the given skill is not running, an error will be returned.
+  string skill_key = 5;
+
+  // The request data.
+  bytes data = 6;
+};
+
+// An RPC response message containing a status and binary user data
+message CustomRpcResponse {
+  // utime of the message
+  int64 utime = 1;
+  // version of the message
+  int32 version = 2;
+
+  // The unique id of the request to which this is a response.
+  int64 request_id = 3;
+
+  // Whether the call succeeded or why it failed.
+  Status status = 4;
+
+  // The response data (or error data in some error cases).
+  bytes data = 5;
+
+  // An enumeration of RPC status codes
+  enum Status {
+    SUCCESS = 0;
+
+    // codes sent by the vehicle which will not contain data
+    MODE_NOT_ACTIVE = 1001;  // The presumed skill isn't active
+    NO_RPC_HANDLER = 1002;   // The skill has not registered an rpc handler
+
+    // codes sent by the vehicle which include `data` that is not a response
+    EXCEPTION = 1101;     // The rpc handler raised an exception.  `data` will be an error string.
+    INVALID_TYPE = 1102;  // the rpc handler on the vehicle returned a non-string type
+
+    // codes returned by the phone service if the vehicle isn't
+    RESPONSE_TIMEOUT = 2001;  // the phone did not receive a response to the call in time
+  }
+}
+
+// A message which just contains the skill which sent the status and binary user data
+message CustomSkillStatus {
+  // utime of the message
+  int64 utime = 1;
+  // version of the message
+  int32 version = 2;
+
+  // The skill which sent the status
+  string skill_key = 3;
+
+  // The binary status data
+  bytes data = 4;
+};

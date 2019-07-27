@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package vehicle;
+option java_package = "com.skydio.pbtypes.vehicle";
+option java_outer_classname = "VehicleProto";
+
+message Vector3i {
+  repeated sint32 data = 1;
+};
+
+message Vector3f {
+  repeated float data = 2;
+};
+
+message Vector3d {
+  repeated double data = 3;
+};
+
+message Quaterniond {
+  repeated double xyzw = 3;
+};
+
+message Quaternionf {
+  repeated float xyzw = 2;
+};
+
+message Trans {
+  int64 utime = 1;
+  Quaterniond orientation = 2;
+  Vector3d position = 3;
+};
+
+message PoseState {
+  int64 utime = 1;
+  Quaterniond orientation = 2;
+  Vector3d position = 3;
+  Vector3d angular_velocity_global = 4;
+  Vector3d velocity_global = 5;
+};
+
+message VoxelHeader {
+  // x,y,z, dimensions in cell counts
+  Vector3i dims = 1;
+
+  // how big is each cell in the world
+  float scale = 2;
+
+  // offset of origin (min point) within the grid
+  Vector3i origin = 3;
+};
+
+message VoxelOccupancyRunLengthEncoded {
+  // utime of the message
+  sint64 utime = 1;
+
+  VoxelHeader header = 2;
+
+  // runs starts with "number of zeros", then "number of ones", etc.
+  // Zero means empty, One means occupied.
+  // The sum of all elements in runs must rqual (dims.x*dims.y*dims.z)
+  repeated sint32 runs = 3;
+};
+
+message GimbalNavTransform {
+  // utime of the message
+  sint64 utime = 1;
+
+  bool has_matching_navigation_image = 2;
+
+  Trans nav_T_gimbal_camera_imu = 3;
+};
