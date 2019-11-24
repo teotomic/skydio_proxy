@@ -391,7 +391,7 @@ def main():
             rospy.loginfo('Starting mission')
 
             skill_key = rospy.get_param('~inspection_skill', INSPECTION_SKILL)
-            client.set_skill(INSPECTION_SKILL)
+            client.set_skill(skill_key)
             active_skill = client.get_active_skill()
             rospy.loginfo("Active skill: {}".format(active_skill))
 
