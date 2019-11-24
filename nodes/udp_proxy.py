@@ -339,8 +339,10 @@ def main():
 
     # Create the client to use for all requests.
     baseurl = rospy.get_param('~baseurl', 'http://192.168.10.1')
+    token_file = rospy.get_param('~token_file', None)
     client = HTTPClient(baseurl,
                         pilot=True,
+                        token_file=token_file,
                         stream_settings=stream_settings)
 
     if not client.check_min_api_version():
