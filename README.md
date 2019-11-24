@@ -11,6 +11,36 @@ The package contains a simple "industrial inspection" skill that flies to predef
 defined by waypoints and gimbal angles, and lands at the end. It streams the vehicle voxel map,
 pose, gimbal pose, and the downsampled 15Hz user camera stream.
 
+## Installation
+
+### Installation steps
+1. Create a ROS workspace, for example ``~/catkin_ws/``
+2. Clone this repo into ``~/catkin_ws/src/`` to get ``~/catkin_ws/src/skydio_proxy/``
+3. Clone [gscam](https://github.com/ros-drivers/gscam) into ``~/catkin_ws/src/``
+4. Install packages for gscam:
+
+    sudo apt-get install gstreamer1.0 libgstreamer1.0-dev gstreamer1.0-plugins-good gstreamer1.0-ffmpeg gstreamer1.0-plugins-ugly 
+
+5. Build the workspace -- run ``catkin_make`` in the top-level workspace directory
+
+    ~/catkin_ws$ catkin_make
+
+### Running
+The package has an example roslaunch file, ``launch/proxy.launch``. Edit the parameters at the top
+of the file.
+
+To use the skills, you have to upload them to the cloud API, as described in the Skydio SDK
+documentation. To run the proxy with a cloud simulation, you have to download the simulation token
+locally. A token is not needed for running the proxy with a vehicle.
+
+The first time you authenticate with the cloud, an email will be sent with an authentication code.
+You can enter the code when ``udp_proxy.py`` prompts, even from roslaunch. This will store a file
+into ``~/.skydio_cloud_api``, so it only has to be done once.
+
+To run the proxy with a GUI, run
+
+    roslaunch skydio_proxy proxy.launch
+
 ## ROS Proxy
 To start the proxy, call
 
@@ -30,7 +60,7 @@ To take off or land:
     rosservice call /skydio_command takeoff
     rosservice call /skydio_command land
 
-To switch to inspection.industrial_inspection skill:
+To switch to inspection.industrial_inspection skill.p:
 
     rosservice call /skydio_command start_mission
 

@@ -1,6 +1,15 @@
 <launch>
   <arg name="USER_CAMERA_PORT" default="55004"/>
   <arg name="UDP_PORT" default="50112"/>
+  <arg name="USER_EMAIL" default="name@example.com"/>
+
+  <!-- Vehicle connected to the computer via wifi -->
+  <!--arg name="BASEURL" default="http://192.168.10.1"/ -->
+  <!--arg name="TOKEN_FILE" default=""/ -->
+
+  <!-- Simulation -->
+  <!--arg name="BASEURL" default="https://simXX.sim.skydio.com"/-->
+  <!--arg name="TOKEN_FILE" default="~/skydio_token.txt"/-->
 
   <node name="voxel_republisher" pkg="skydio_proxy" type="voxel_republisher_node" output="screen">
     <param name="voxel_rle_topic" value="/skydio/voxel_rle"/>
@@ -15,11 +24,13 @@
   <node name="skydio" pkg="skydio_proxy" type="udp_proxy.py" output="screen">
     <!-- Skills -->
     <!-- Set this parameter to your skydio SDK login -->
-    <!-- param name="user_email" value="name@example.com"/ -->
+    <param name="user_email" value="$(arg USER_EMAIL)"/>
 
     <!-- Ports -->
     <param name="h264_stream_port" value="$(arg USER_CAMERA_PORT)"/>
     <param name="udp_port" value="$(arg UDP_PORT)"/>
+    <param name="baseurl" value="$(arg BASEURL)"/>
+    <param name="token_file" value="$(arg TOKEN_FILE)"/>
 
     <!-- TF configuration -->
     <param name="vehicle_frame" value="skydio"/>
