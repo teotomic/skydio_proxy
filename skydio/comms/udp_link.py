@@ -17,8 +17,9 @@ from skydio.types import custom_comms_pb2
 from skydio.types import skybus_pb2
 from skydio.types import vehicle_pb2
 from skydio.types.multipart_msg_t import multipart_msg_t
-from skydio.lcmtypes.body import *
+from skydio.lcmtypes.voxels import voxel_occupancy_run_length_encoded_t
 from skydio.lcmtypes.common import *
+from skydio.lcmtypes.body import *
 from skydio.lcmtypes.dynamics_model import *
 
 
@@ -39,6 +40,9 @@ class UDPLink(object):
         self.server_socket.bind(('', local_port))
         self.remote_address = remote_address
 
+        # remote_address is a (hostname, port) tuple
+        self.remote_ip = (str(socket.gethostbyname(remote_address[0])), remote_address[1])
+
         # Prep a reuseable rpc
         self.request = custom_comms_pb2.CustomRpcRequest()
         self.request.request_id = 0
@@ -52,8 +56,6 @@ class UDPLink(object):
             'PHONE_UDP_SUBSCRIPTION_ACK_PB',
             'CUSTOM_SKILL_RPC_RESPONSE_PB',
             'CUSTOM_SKILL_STATUS_PB',
-            # TODO(teo): implement
-            'FLIGHT_PHASE_PB',
         ]
         for channel in channels:
             self.subscription_list.channels.add().channel = channel
@@ -117,11 +119,11 @@ class UDPLink(object):
             data, address = self.server_socket.recvfrom(MAX_PACKET_SIZE)
         except socket.timeout:
             return
-        if address != self.remote_address:
+        if address != self.remote_address and address != self.remote_ip:
             # Ignore packets from unexpected sources
-            print('dropping packet from unknown address {}. {} expected'
-                  .format(address, self.remote_address))
-            return
+            print('dropping packet from unknown address {}. {} or {} expected'
+                  .format(address, self.remote_address, self.remote_ip))
+            # return
         # TODO(teo): build up data if msg.chunk_size > len(msg.chunk_data)
         msg = multipart_msg_t.decode(data)
         if msg.chunk_count > 1:
