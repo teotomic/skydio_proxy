@@ -19,7 +19,7 @@ pose, gimbal pose, and the downsampled 15Hz user camera stream.
 3. Clone [gscam](https://github.com/ros-drivers/gscam) into ``~/catkin_ws/src/``
 4. Install packages for gscam:
 
-    ``sudo apt-get install gstreamer1.0 libgstreamer1.0-dev gstreamer1.0-plugins-good gstreamer1.0-ffmpeg gstreamer1.0-plugins-ugly``
+    ``sudo apt-get install gstreamer1.0 libgstreamer1.0-dev gstreamer1.0-plugins-good gstreamer1.0-ffmpeg gstreamer1.0-plugins-ugly libgstreamer-plugins-bad1.0-dev``
 
 5. Build the workspace -- run ``catkin_make`` in the top-level workspace directory
 
